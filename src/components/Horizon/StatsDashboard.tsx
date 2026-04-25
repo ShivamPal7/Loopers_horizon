@@ -89,12 +89,20 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({
               <span className="text-3xl font-black text-white tracking-tight">₹{monthlySavings >= 1000 ? `${(monthlySavings/1000).toFixed(0)}k` : monthlySavings}</span>
             </div>
             <div className="space-y-1 text-right">
-              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Total Goals</span>
-              <span className="text-3xl font-black text-white tracking-tight">{totalGoals}</span>
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Annual Savings</span>
+              <span className="text-3xl font-black text-emerald-400 tracking-tight">₹{((monthlySavings * 12)/100000).toFixed(1)}L</span>
             </div>
             <div className="space-y-1">
-              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Avg Growth</span>
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Avg Growth Rate</span>
               <span className="text-3xl font-black text-white tracking-tight">{annualInterestRate}%</span>
+            </div>
+            <div className="space-y-1 text-right">
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Est. Yearly Growth</span>
+              <span className="text-3xl font-black text-emerald-400 tracking-tight">₹{((projection[0]?.growth || 0)/100000).toFixed(1)}L</span>
+            </div>
+            <div className="space-y-1">
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Total Goals</span>
+              <span className="text-3xl font-black text-white tracking-tight">{totalGoals}</span>
             </div>
             <div className="space-y-1 text-right">
               <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Time to Goal</span>
@@ -174,28 +182,37 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {['STEADY SAVER', 'GOAL SETTER', 'ON TRACK', 'EARLY BIRD'].map((label, i) => {
-              const isHighlight = i === 3;
+            {[
+              { id: 'steady-saver', label: 'STEADY SAVER', icon: TrendingUp },
+              { id: 'goal-setter', label: 'GOAL SETTER', icon: Target },
+              { id: 'on-track', label: 'ON TRACK', icon: Layout },
+              { id: 'early-bird', label: 'EARLY BIRD', icon: Clock },
+            ].map((badge) => {
+              const isAchieved = stats.badges.some(b => b.id === badge.id);
+              const Icon = badge.icon;
+              
               return (
                 <div 
-                  key={label}
+                  key={badge.id}
                   className={cn(
-                    "aspect-square rounded-3xl flex flex-col items-center justify-center gap-3 transition-all",
-                    isHighlight 
-                      ? "bg-white/10 border-2 border-amber-500/40 shadow-lg shadow-amber-500/10" 
-                      : "bg-white/5 border border-white/5 opacity-30 grayscale"
+                    "aspect-square rounded-3xl flex flex-col items-center justify-center gap-3 transition-all duration-500",
+                    isAchieved 
+                      ? "bg-emerald-500/10 border-2 border-emerald-500/40 shadow-xl shadow-emerald-500/10 scale-100" 
+                      : "bg-white/5 border border-white/5 opacity-20 grayscale scale-95"
                   )}
                 >
                   <div className={cn(
-                    "p-3 rounded-full",
-                    isHighlight ? "bg-amber-500/20 text-amber-400" : "bg-white/10 text-white/40"
+                    "p-3 rounded-full transition-colors duration-500",
+                    isAchieved ? "bg-emerald-500/20 text-emerald-400" : "bg-white/10 text-white/40"
                   )}>
-                    {label === 'STEADY SAVER' && <TrendingUp size={20} />}
-                    {label === 'GOAL SETTER' && <Target size={20} />}
-                    {label === 'ON TRACK' && <Layout size={20} />}
-                    {label === 'EARLY BIRD' && <Clock size={20} />}
+                    <Icon size={20} />
                   </div>
-                  <span className="text-[8px] font-black text-white/60 uppercase tracking-widest">{label}</span>
+                  <span className={cn(
+                    "text-[8px] font-black uppercase tracking-widest transition-colors",
+                    isAchieved ? "text-emerald-500/80" : "text-white/30"
+                  )}>
+                    {badge.label}
+                  </span>
                 </div>
               );
             })}

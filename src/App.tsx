@@ -5,7 +5,7 @@ import { HorizonCanvas } from './components/Horizon/HorizonCanvas';
 import { ControlPanel } from './components/Horizon/ControlPanel';
 import { StatsDashboard } from './components/Horizon/StatsDashboard';
 import { ScenarioComparison } from './components/Horizon/ScenarioComparison';
-import { MonthlyBreakdown } from './components/Horizon/MonthlyBreakdown';
+import { YearlyCashflow } from './components/Horizon/YearlyCashflow';
 import { MilestoneForm } from './components/Horizon/MilestoneForm';
 import { Plus, LayoutDashboard, FileText, Share2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,7 +38,6 @@ function App() {
   } | null>(null);
   const [showComparison, setShowComparison] = useState(false);
   const [isAddingMilestone, setIsAddingMilestone] = useState(false);
-  const [selectedYear, setSelectedYear] = useState<number | null>(32);
 
   const terminalBalance = projection[projection.length - 1]?.balance || 0;
 
@@ -121,7 +120,6 @@ function App() {
             lifeEvents={lifeEvents}
             projection={projection}
             onUpdateMilestone={updateMilestone}
-            onSelectYear={setSelectedYear}
             zoomLevel={zoomLevel}
             currentAge={currentAge}
           />
@@ -163,21 +161,16 @@ function App() {
               />
             </section>
 
-            {selectedYear && (
-              <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                 <div className="px-2">
-                  <h2 className="text-2xl font-black text-white tracking-tight">Yearly Cashflow Details</h2>
-                  <p className="text-sm font-medium text-white/30 mt-1">Detailed month-by-month breakdown of growth and withdrawals for Age {selectedYear}</p>
-                </div>
-                <MonthlyBreakdown 
-                  year={selectedYear}
-                  monthlySavings={monthlySavings}
-                  annualInterestRate={annualInterestRate}
-                  milestonesInYear={milestones.filter(m => Math.floor(m.age) === selectedYear)}
-                  startBalance={projection.find(p => p.age === selectedYear - 1)?.balance || initialNetWorth}
-                />
-              </section>
-            )}
+            <section className="space-y-6">
+              <div className="px-2">
+                <h2 className="text-2xl font-black text-white tracking-tight">Lifecycle Cashflow Details</h2>
+                <p className="text-sm font-medium text-white/30 mt-1">Full year-by-year breakdown of capital accumulation and milestone drawdowns</p>
+              </div>
+              <YearlyCashflow 
+                projection={projection}
+                milestones={milestones}
+              />
+            </section>
           </div>
 
           <aside className="lg:col-span-4 space-y-8">

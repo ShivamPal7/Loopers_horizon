@@ -16,6 +16,8 @@ export interface LifeEvent {
 export interface SimulationResult {
   age: number;
   balance: number;
+  growth: number;
+  savings: number;
   shortfall: 'none' | 'minor' | 'moderate' | 'critical';
   milestoneId?: string;
 }
@@ -62,11 +64,15 @@ export const calculateForwardSimulation = (
   }, {} as Record<number, Milestone[]>);
 
   for (let age = startAge; age <= endAge; age++) {
+    let growth = 0;
     if (age > startAge) {
+      const prevBalance = currentBalance;
       currentBalance *= (1 + realRate);
+      growth = currentBalance - prevBalance;
     }
 
-    currentBalance += monthlySavings * 12;
+    const yearlySavings = monthlySavings * 12;
+    currentBalance += yearlySavings;
 
     const ageMilestones = milestoneMap[age] || [];
     let shortfallType: SimulationResult['shortfall'] = 'none';
@@ -84,6 +90,8 @@ export const calculateForwardSimulation = (
     results.push({
       age,
       balance: currentBalance,
+      growth,
+      savings: yearlySavings,
       shortfall: shortfallType,
     });
   }
