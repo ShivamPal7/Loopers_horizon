@@ -8,11 +8,22 @@ import {
   AlertCircle,
   Clock,
   ArrowUpRight,
-  TrendingUp
+  TrendingUp,
+  TrendingDown
 } from 'lucide-react';
 import type { Milestone, FinancialSettings } from '../lib/types';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from "@/components/ui/badge"
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card"
 
 interface StatsCardProps {
   settings: FinancialSettings;
@@ -26,16 +37,16 @@ export function StatsCard({ settings, milestones, projectionData }: StatsCardPro
 
   // Life Stage logic
   const getLifeStage = (age: number) => {
-    if (age < 25) return 'EARLY_CAREER';
-    if (age < 35) return 'ESTABLISHMENT';
-    if (age < 50) return 'PEAK_EARNING';
-    if (age < 60) return 'PRE_RETIREMENT';
-    return 'RETIREMENT';
+    if (age < 25) return 'Early Career';
+    if (age < 35) return 'Establishment';
+    if (age < 50) return 'Peak Earning';
+    if (age < 60) return 'Pre-Retirement';
+    return 'Retirement';
   };
 
   const lifeStage = getLifeStage(currentAge);
 
-  // Peer comparison (Mock data based on Indian averages as requested)
+  // Peer comparison (Mock data based on Indian averages)
   const avgNetWorthByAge: Record<number, number> = {
     25: 320000,
     28: 500000,
@@ -51,219 +62,120 @@ export function StatsCard({ settings, milestones, projectionData }: StatsCardPro
   const netWorthDiff = settings.currentNetWorth - avgNetWorth;
   const percentAhead = (netWorthDiff / avgNetWorth) * 100;
 
+  const formatCurrency = (val: number) => {
+    if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`
+    if (val >= 100000) return `₹${(val / 100000).toFixed(1)}L`
+    return `₹${(val / 1000).toFixed(0)}K`
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {/* Section A: Current Position */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6"
-      >
-        <div className="flex items-center gap-2 text-blue-600">
-          <Clock className="w-4 h-4" />
-          <h3 className="text-xs font-black uppercase tracking-widest">Current Position</h3>
-        </div>
-        
-        <div className="space-y-4">
-          <div className="flex justify-between items-end">
-            <div>
-              <p className="text-3xl font-black text-slate-900">{currentAge}</p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{lifeStage.replace('_', ' ')}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xl font-bold text-slate-700">{settings.lifeExpectancy - currentAge}</p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Years Left</p>
-            </div>
+    <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 lg:grid-cols-2 xl:grid-cols-4">
+      {/* Current Position */}
+      <Card className="@container/card bg-gradient-to-t from-blue-500/5 to-card shadow-xs">
+        <CardHeader>
+          <CardDescription className="flex items-center gap-1.5">
+            <Clock className="size-3.5 text-muted-foreground" />
+            Current Position
+          </CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            Age {currentAge}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50 dark:bg-blue-950/40 dark:border-blue-800 dark:text-blue-400">
+              {lifeStage}
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm min-h-[80px] justify-end">
+          <div className="flex justify-between w-full text-sm font-medium">
+            <span>Life Progress</span>
+            <span>{lifeProgress.toFixed(0)}%</span>
           </div>
-          
-          <div className="space-y-1.5">
-            <div className="flex justify-between text-[10px] font-bold text-slate-500">
-              <span>LIFE PROGRESS</span>
-              <span>{lifeProgress.toFixed(0)}%</span>
-            </div>
-            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-              <motion.div 
-                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500"
-                initial={{ width: 0 }}
-                whileInView={{ width: `${lifeProgress}%` }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-              />
-            </div>
+          <Progress value={lifeProgress} className="h-1.5 w-full bg-slate-100" />
+          <div className="text-muted-foreground text-xs">{settings.lifeExpectancy - currentAge} years remaining</div>
+        </CardFooter>
+      </Card>
+
+      {/* Peer Comparison */}
+      <Card className="@container/card bg-gradient-to-t from-indigo-500/5 to-card shadow-xs">
+        <CardHeader>
+          <CardDescription className="flex items-center gap-1.5">
+            <Users className="size-3.5 text-muted-foreground" />
+            Peer Comparison
+          </CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {Math.abs(percentAhead).toFixed(0)}%
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline" className={percentAhead >= 0 ? "text-green-600 border-green-200 bg-green-50 dark:bg-green-950/40 dark:border-green-800 dark:text-green-400" : "text-red-600 border-red-200 bg-red-50 dark:bg-red-950/40 dark:border-red-800 dark:text-red-400"}>
+              {percentAhead >= 0 ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
+              {percentAhead >= 0 ? 'Ahead' : 'Behind'}
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm min-h-[80px] justify-end">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            Vs. ₹{formatCurrency(avgNetWorth)} average
+            {percentAhead >= 0 ? <TrendingUp className="size-4 text-green-500" /> : <TrendingDown className="size-4 text-red-500" />}
           </div>
-        </div>
-      </motion.div>
+          <div className="text-muted-foreground text-xs">For Age {nearestAge} bracket</div>
+        </CardFooter>
+      </Card>
 
-      {/* Section B: Goal Tracking */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.1 }}
-        className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
-      >
-        <div className="flex items-center gap-2 text-emerald-600">
-          <Target className="w-4 h-4" />
-          <h3 className="text-xs font-black uppercase tracking-widest">Goal Tracking</h3>
-        </div>
-
-        <div className="space-y-3 overflow-y-auto max-h-[200px] pr-2 no-scrollbar">
-          {milestones.length === 0 ? (
-            <p className="text-xs text-slate-400 italic">No milestones set yet.</p>
-          ) : (
-            milestones.map((m) => {
-              const yearsAway = m.targetAge - currentAge;
-              const projectedAtAge = projectionData.find(d => d.age === m.targetAge)?.balance || 0;
-              const completionPercent = Math.min(100, (projectedAtAge / m.cost) * 100);
-              const isShortfall = projectedAtAge < m.cost;
-
-              return (
-                <div key={m.id} className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-xs font-bold text-slate-800">{m.label}</p>
-                      <p className="text-[10px] text-slate-500">{yearsAway} years away</p>
-                    </div>
-                    {isShortfall ? (
-                      <span className="flex items-center gap-1 text-[10px] font-black text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded uppercase">
-                        <AlertCircle className="w-3 h-3" /> At Risk
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded uppercase">
-                        <CheckCircle2 className="w-3 h-3" /> On Track
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                      <div 
-                        className={cn("h-full", isShortfall ? "bg-amber-500" : "bg-emerald-500")}
-                        style={{ width: `${completionPercent}%` }}
-                      />
-                    </div>
-                    <span className="text-[10px] font-black text-slate-700">{completionPercent.toFixed(0)}%</span>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
-      </motion.div>
-
-      {/* Section C: Peer Comparison */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
-        className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6"
-      >
-        <div className="flex items-center gap-2 text-indigo-600">
-          <Users className="w-4 h-4" />
-          <h3 className="text-xs font-black uppercase tracking-widest">Peer Comparison</h3>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">vs Average (Age {nearestAge})</span>
-            <span className={cn(
-              "text-xs font-black px-2 py-0.5 rounded-full flex items-center gap-1",
-              percentAhead >= 0 ? "text-emerald-600 bg-emerald-50" : "text-rose-600 bg-rose-50"
-            )}>
-              <ArrowUpRight className={cn("w-3 h-3", percentAhead < 0 && "rotate-90")} />
-              {Math.abs(percentAhead).toFixed(0)}% {percentAhead >= 0 ? 'Ahead' : 'Behind'}
-            </span>
+      {/* Goal Status */}
+      <Card className="@container/card bg-gradient-to-t from-emerald-500/5 to-card shadow-xs">
+        <CardHeader>
+          <CardDescription className="flex items-center gap-1.5">
+            <Target className="size-3.5 text-muted-foreground" />
+            Milestone Readiness
+          </CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {milestones.filter(m => (projectionData.find(d => d.age === m.targetAge)?.balance || 0) >= m.cost).length} / {milestones.length}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-400">
+              {milestones.length > 0 ? ((milestones.filter(m => (projectionData.find(d => d.age === m.targetAge)?.balance || 0) >= m.cost).length / milestones.length) * 100).toFixed(0) : 0}% Ready
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm min-h-[80px] justify-end">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            {milestones.length - milestones.filter(m => (projectionData.find(d => d.age === m.targetAge)?.balance || 0) >= m.cost).length} goals need attention
+            <Activity className="size-4 text-amber-500" />
           </div>
+          <div className="text-muted-foreground text-xs">Based on current savings rate</div>
+        </CardFooter>
+      </Card>
 
-          <div className="flex items-end gap-2 h-24">
-            <div className="flex-1 flex flex-col items-center gap-2">
-              <div 
-                className="w-full bg-slate-100 rounded-t-lg transition-all duration-1000" 
-                style={{ height: '60%' }} 
-              />
-              <span className="text-[9px] font-black text-slate-400">AVERAGE</span>
-            </div>
-            <div className="flex-1 flex flex-col items-center gap-2">
-              <div 
-                className="w-full bg-indigo-500 rounded-t-lg transition-all duration-1000 shadow-lg shadow-indigo-100" 
-                style={{ height: `${60 + (percentAhead * 0.4)}%` }} 
-              />
-              <span className="text-[9px] font-black text-indigo-600 uppercase tracking-tighter">YOU</span>
-            </div>
+      {/* Achievement Summary */}
+      <Card className="@container/card bg-gradient-to-t from-amber-500/5 to-card shadow-xs">
+        <CardHeader>
+          <CardDescription className="flex items-center gap-1.5">
+            <Trophy className="size-3.5 text-muted-foreground" />
+            Achievements
+          </CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {[
+              settings.monthlySavings > 50000,
+              milestones.length >= 3,
+              milestones.length > 0 && milestones.every(m => (projectionData.find(d => d.age === m.targetAge)?.balance || 0) >= m.cost),
+              settings.currentAge < 30
+            ].filter(Boolean).length} Badges
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline" className="text-amber-600 border-amber-200 bg-amber-50 dark:bg-amber-950/40 dark:border-amber-800 dark:text-amber-400">
+              Active Plan
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm min-h-[80px] justify-end">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            {milestones.length > 0 ? "Compounding Master" : "Planning Phase"}
+            <TrendingUp className="size-4 text-amber-500" />
           </div>
-        </div>
-      </motion.div>
-
-      {/* Section D: Achievement Badges */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3 }}
-        className="bg-slate-50 p-6 rounded-2xl border border-slate-200 md:col-span-2 lg:col-span-2 space-y-4"
-      >
-        <div className="flex items-center gap-2 text-amber-600">
-          <Trophy className="w-4 h-4" />
-          <h3 className="text-xs font-black uppercase tracking-widest">Achievement Badges</h3>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[
-            { label: 'Steady Saver', icon: Activity, earned: settings.monthlySavings > 50000 },
-            { label: 'Goal Setter', icon: Target, earned: milestones.length >= 3 },
-            { label: 'On Track', icon: CheckCircle2, earned: milestones.every(m => (projectionData.find(d => d.age === m.targetAge)?.balance || 0) >= m.cost) },
-            { label: 'Early Bird', icon: Clock, earned: settings.currentAge < 30 },
-          ].map((badge, i) => (
-            <div 
-              key={i} 
-              className={cn(
-                "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
-                badge.earned 
-                  ? "bg-white border-amber-200 shadow-sm scale-105" 
-                  : "bg-slate-100 border-slate-200 grayscale opacity-40"
-              )}
-            >
-              <badge.icon className={cn("w-6 h-6", badge.earned ? "text-amber-500" : "text-slate-400")} />
-              <span className="text-[10px] font-black text-slate-800 text-center uppercase tracking-tight leading-tight">{badge.label}</span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Section E: Quick Stats */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-        className="bg-slate-900 p-6 rounded-2xl border border-slate-800 text-white space-y-6"
-      >
-        <div className="flex items-center gap-2 text-blue-400">
-          <TrendingUp className="w-4 h-4" />
-          <h3 className="text-xs font-black uppercase tracking-widest">Quick Stats</h3>
-        </div>
-
-        <div className="grid grid-cols-2 gap-y-4 gap-x-2">
-          <div>
-            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Monthly Savings</p>
-            <p className="text-sm font-black text-slate-200">₹{(settings.monthlySavings / 1000).toFixed(0)}k</p>
-          </div>
-          <div>
-            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Total Goals</p>
-            <p className="text-sm font-black text-slate-200">{milestones.length}</p>
-          </div>
-          <div>
-            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Avg Growth</p>
-            <p className="text-sm font-black text-slate-200">{settings.annualInterestRate}%</p>
-          </div>
-          <div>
-            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Time to Goal</p>
-            <p className="text-sm font-black text-slate-200">
-              {milestones.length > 0 ? `${Math.min(...milestones.map(m => m.targetAge - currentAge))} yrs` : 'N/A'}
-            </p>
-          </div>
-        </div>
-      </motion.div>
+          <div className="text-muted-foreground text-xs">Unlock more by adding milestones</div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

@@ -1,24 +1,78 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
+
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Download, 
+  ArrowRightLeft, 
+} from 'lucide-react';
+import { useHorizonStore } from '../lib/useHorizonStore';
+import { StatsCard } from '../components/StatsCard';
+import { ScenarioPanel } from '../components/ScenarioPanel';
+import { ProjectionChart } from '../components/ProjectionChart';
+import { ScenarioComparison } from '../components/ScenarioComparison';
+import { Button } from "@/components/ui/button"
 
 export function LifeTimelinePage() {
+  const { settings, milestones, updateSettings, projectionData } = useHorizonStore();
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Life Timeline</h2>
+    <div className="@container/main flex flex-1 flex-col gap-2">
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        
+        {/* Header with Action */}
+        <div className="flex items-center justify-between px-4 lg:px-6">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Life Timeline</h1>
+            <p className="text-sm text-muted-foreground">Projected financial journey based on current trajectory</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setIsCompareOpen(true)}
+              className="gap-2"
+            >
+              <ArrowRightLeft className="size-4" />
+              Compare Scenarios
+            </Button>
+            <Button variant="ghost" size="icon-sm" className="rounded-xl border border-border/50">
+              <Download className="size-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Executive Summary */}
+        <StatsCard 
+          settings={settings} 
+          milestones={milestones} 
+          projectionData={projectionData} 
+        />
+
+        <div className="grid grid-cols-1 px-4 lg:px-6 xl:grid-cols-12 gap-6">
+          {/* Simulation Controls - Left Sidebar */}
+          <div className="xl:col-span-3">
+            <ScenarioPanel settings={settings} onChange={updateSettings} />
+          </div>
+
+          {/* Visualizations - Right Main Area */}
+          <div className="xl:col-span-9">
+            <ProjectionChart 
+              data={projectionData} 
+              milestones={milestones} 
+              currentAge={settings.currentAge} 
+            />
+          </div>
+        </div>
       </div>
-      <div className="mt-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Life Events</CardTitle>
-            <CardDescription>Major milestones mapping</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px] flex items-center justify-center text-muted-foreground border-2 border-dashed rounded-lg">
-              Timeline View
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+
+      <ScenarioComparison 
+        currentSettings={settings}
+        milestones={milestones}
+        open={isCompareOpen}
+        onOpenChange={setIsCompareOpen}
+      />
     </div>
-  )
+  );
 }
