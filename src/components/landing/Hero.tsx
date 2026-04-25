@@ -1,60 +1,67 @@
+import { useNavigate } from "react-router-dom"
+import { ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card } from "@/components/ui/card"
+
 export function Hero() {
+  const navigate = useNavigate()
+
   return (
-    <section className="pb-8" id="home">
-      {/* White rounded hero card */}
-      <div className="bg-white rounded-[28px] shadow-[0_4px_32px_rgba(65,105,225,0.08)] overflow-hidden relative">
-        <div className="grid grid-cols-[1.1fr_1fr_0.9fr] items-center min-h-[320px]">
+    <section className="py-12" id="home">
+      <Card className="overflow-hidden border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr_0.8fr] items-center min-h-[300px]">
 
-          {/* LEFT — text content */}
-          <div className="px-10 py-10 relative z-10">
-            {/* Decorative elements */}
-            <span className="absolute top-[20%] left-[6%] w-2 h-2 rounded-full bg-[#FF5252]" />
-            <span className="absolute top-[35%] left-[9%] w-1.5 h-1.5 rounded-full bg-[#4169E1]" />
-            <svg className="absolute top-[52%] left-[5%]" width="22" height="12" viewBox="0 0 22 12" fill="none">
-              <path d="M1 10 C4 3 8 3 11 6 S18 10 21 5" stroke="#4169E1" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-            </svg>
-
-            <p className="text-[13px] text-[#9999BB] font-medium mb-3 leading-none">
-              Get $50 Reward on first login
-            </p>
-            <h1 className="text-[36px] font-bold text-[#1A1A2E] leading-[1.18] tracking-[-0.03em] mb-7">
-              You can Control<br />
-              All you finance<br />
-              through Finicha
+          {/* LEFT */}
+          <div className="px-10 py-12 flex flex-col gap-6">
+            <Badge variant="secondary" className="w-fit text-xs font-semibold tracking-wide">
+              The Future of Financial Planning
+            </Badge>
+            <h1 className="text-4xl font-bold text-foreground leading-tight tracking-tight">
+              Map your{" "}
+              <span className="text-muted-foreground">financial destiny.</span>
             </h1>
-            <button className="inline-flex items-center gap-3 bg-[#FF5252] text-white font-semibold text-[14px] rounded-full px-6 py-3.5 border-none cursor-pointer hover:bg-[#e84040] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(255,82,82,0.35)]">
-              Get Started
-              <span className="w-8 h-8 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </span>
-            </button>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              Horizon transforms abstract numbers into a concrete life path. Plan milestones, simulate growth, and secure your freedom.
+            </p>
+            <div className="flex items-center gap-3">
+              <Button onClick={() => navigate("/auth?mode=signup")} className="gap-2">
+                Get Started <ArrowRight className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/auth?mode=login")}>
+                Log In
+              </Button>
+            </div>
           </div>
 
-          {/* CENTER — illustration */}
-          <div className="relative flex items-center justify-center py-6">
-            {/* floating dots around illustration */}
-            <span className="absolute top-[12%] right-[20%] w-2.5 h-2.5 rounded-full bg-[#FF5252]" />
-            <span className="absolute top-[22%] left-[10%] w-2 h-2 rounded-full bg-[#4169E1]" />
-            <span className="absolute bottom-[20%] right-[15%] w-2.5 h-2.5 rounded-full bg-[#FFD166]" />
-            <span className="absolute top-[18%] left-[28%] text-[#4169E1] font-bold text-lg leading-none">+</span>
-            <span className="absolute bottom-[18%] left-[18%] w-3 h-3 rounded-full border-2 border-[#FF5252] bg-transparent" />
-            <img
-              src="/hero-illustration.png"
-              alt="Finance control illustration"
-              className="w-[260px] h-auto object-contain relative z-10"
-            />
+          {/* CENTER */}
+          <div className="relative flex items-center justify-center py-12 bg-muted/40 border-x border-border">
+            <div className="relative w-44 h-44">
+              <div className="absolute inset-0 rounded-full border border-border" />
+              <div className="absolute inset-4 rounded-full border border-border" />
+              <div className="absolute inset-8 rounded-full bg-primary flex items-center justify-center shadow-lg">
+                <div className="w-8 h-8 border-2 border-primary-foreground rounded-full" />
+              </div>
+              {/* Floating chips */}
+              <div className="absolute -top-4 -right-8 bg-card border border-border rounded-xl px-3 py-1.5 shadow-sm">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest leading-none mb-0.5">Growth</p>
+                <p className="text-sm font-bold text-foreground">+23%</p>
+              </div>
+              <div className="absolute -bottom-4 -left-8 bg-card border border-border rounded-xl px-3 py-1.5 shadow-sm">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest leading-none mb-0.5">Goals</p>
+                <p className="text-sm font-bold text-foreground">8.4k</p>
+              </div>
+            </div>
           </div>
 
-          {/* RIGHT — tagline */}
-          <div className="px-8 py-10 border-l border-[#F0F2FF]">
-            <p className="text-[13.5px] text-[#5C5C7A] leading-[1.75] m-0">
-              we will your banking to next level. Enjoy our one click app with advanced features.
+          {/* RIGHT */}
+          <div className="px-8 py-12">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              We take your banking to the next level. Enjoy our one-click app with advanced features and real-time projections.
             </p>
           </div>
         </div>
-      </div>
+      </Card>
     </section>
   )
 }

@@ -1,53 +1,57 @@
-// Feature cards — 3-column layout with illustrations
-// Left and right cards are shorter, center card is taller
-// Each card has a light background with a centered illustration
+import { Target, TrendingUp, Shield } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
 const CARDS = [
   {
-    bg: "#F3F5FF",
-    illustrationStyle: { objectPosition: "15% center" },
-    height: "h-[260px]",
+    icon: Target,
+    title: "Milestone Architecture",
+    desc: "Drag and drop major life events onto your timeline. Visualize exactly how a house purchase or career change impacts your trajectory.",
+    tall: false,
   },
   {
-    bg: "#FFF8E6",
-    illustrationStyle: { objectPosition: "50% center" },
-    height: "h-[320px]",
+    icon: TrendingUp,
+    title: "Real-time Simulation",
+    desc: "Instantly see the compound effect of your savings rate, inflation, and market returns on your terminal wealth.",
+    tall: true,
   },
   {
-    bg: "#FFF0F0",
-    illustrationStyle: { objectPosition: "85% center" },
-    height: "h-[260px]",
+    icon: Shield,
+    title: "AI Strategy Engine",
+    desc: "Receive dynamic, intelligent recommendations based on your current trajectory to prevent shortfall risks.",
+    tall: false,
   },
 ]
 
 export function Features() {
   return (
-    <section className="max-w-[1200px] mx-auto px-6 pb-12" id="service">
-      {/* Section heading */}
+    <section className="py-12" id="service">
       <div className="text-center mb-10">
-        <h2 className="text-[28px] font-bold text-[#1A1A2E] leading-[1.35] tracking-[-0.02em] m-0">
+        <h2 className="text-2xl font-bold text-foreground tracking-tight leading-snug">
           Built for forward-looking finance teams<br />
-          and achieve your goals with our<br />
-          professional team
+          and achieve your goals with our professional team
         </h2>
       </div>
 
-      {/* 3-column card grid — sides shorter, center taller */}
-      <div className="grid grid-cols-3 gap-4 items-end">
-        {CARDS.map((card, i) => (
-          <div
-            key={i}
-            className={`rounded-[20px] overflow-hidden ${card.height} flex items-center justify-center transition-transform duration-300 hover:-translate-y-1`}
-            style={{ background: card.bg, boxShadow: "0 4px 24px rgba(65,105,225,0.07)" }}
-          >
-            <img
-              src="/features-illustration.png"
-              alt="Feature illustration"
-              className="w-full h-full object-cover"
-              style={card.illustrationStyle}
-            />
-          </div>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        {CARDS.map((card) => {
+          const Icon = card.icon
+          return (
+            <Card
+              key={card.title}
+              className={`border-border hover:-translate-y-1 transition-transform duration-300 ${card.tall ? "md:min-h-[320px]" : "md:min-h-[260px]"}`}
+            >
+              <CardHeader>
+                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-2">
+                  <Icon className="w-5 h-5 text-foreground" />
+                </div>
+                <CardTitle className="text-base">{card.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-sm leading-relaxed">{card.desc}</CardDescription>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
     </section>
   )

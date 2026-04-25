@@ -4,7 +4,7 @@ import { useAuthStore } from './lib/useAuthStore';
 import { DashboardApp } from './pages/DashboardApp';
 import { AuthPage } from './pages/AuthPage';
 import { ProfilePage } from './pages/ProfilePage';
-import { LandingPage } from './pages/LandingPage';
+import { LandingPage } from './components/landing/LandingPage';
 import "@fontsource-variable/geist/index.css";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
