@@ -39,30 +39,30 @@ export const MilestoneForm: React.FC<MilestoneFormProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-md"
           />
           
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-md bg-[#0f0f11] border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
+            className="relative w-full max-w-md bg-[#0f172a] border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
           >
-            <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+            <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
               <div>
-                <h2 className="text-lg font-black text-white uppercase tracking-tight">New Milestone</h2>
+                <h2 className="text-xl font-black text-white uppercase tracking-tight">New Milestone</h2>
                 <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Add life goal to trajectory</p>
               </div>
-              <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
-                <X size={20} className="text-white/40" />
+              <button onClick={onClose} className="p-3 hover:bg-white/10 rounded-full transition-colors">
+                <X size={24} className="text-white/40" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="p-10 space-y-8">
               {/* Label */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-[10px] font-black text-white/40 uppercase tracking-widest">
-                  <Tag size={12} />
+                  <Tag size={12} strokeWidth={3} />
                   Milestone Name
                 </label>
                 <input
@@ -71,16 +71,16 @@ export const MilestoneForm: React.FC<MilestoneFormProps> = ({
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   placeholder="e.g., Buy Apartment"
-                  className="w-full bg-white/5 border border-white/5 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white focus:outline-none focus:border-blue-500/50 transition-colors"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 {/* Age */}
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <label className="flex items-center gap-2 text-[10px] font-black text-white/40 uppercase tracking-widest">
-                    <Calendar size={12} />
+                    <Calendar size={12} strokeWidth={3} />
                     Target Age
                   </label>
                   <input
@@ -89,20 +89,20 @@ export const MilestoneForm: React.FC<MilestoneFormProps> = ({
                     max="80"
                     value={age}
                     onChange={(e) => setAge(Number(e.target.value))}
-                    className="w-full bg-white/5 border border-white/5 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-colors"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white focus:outline-none focus:border-blue-500/50 transition-colors"
                   />
                 </div>
 
                 {/* Category */}
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <label className="flex items-center gap-2 text-[10px] font-black text-white/40 uppercase tracking-widest">
-                    <Layout size={12} />
+                    <Layout size={12} strokeWidth={3} />
                     Category
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value as Milestone['category'])}
-                    className="w-full bg-white/5 border border-white/5 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-colors appearance-none"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white focus:outline-none focus:border-blue-500/50 transition-colors appearance-none"
                   >
                     <option value="housing">Housing</option>
                     <option value="business">Business</option>
@@ -118,24 +118,24 @@ export const MilestoneForm: React.FC<MilestoneFormProps> = ({
               </div>
 
               {/* Cost */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-[10px] font-black text-white/40 uppercase tracking-widest">
-                  <DollarSign size={12} />
+                  <DollarSign size={12} strokeWidth={3} />
                   Target Cost (INR)
                 </label>
                 <input
                   type="number"
                   value={cost}
                   onChange={(e) => setCost(Number(e.target.value))}
-                  className="w-full bg-white/5 border border-white/5 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-colors"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white focus:outline-none focus:border-blue-500/50 transition-colors"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-blue-600/20 transition-all active:scale-[0.98]"
+                className="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-blue-600/20 transition-all active:scale-[0.98]"
               >
-                <Save size={18} />
+                <Save size={20} />
                 Save Milestone
               </button>
             </form>
