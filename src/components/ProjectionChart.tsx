@@ -6,8 +6,6 @@ import {
   XAxis, 
   YAxis, 
   CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
   ReferenceLine
 } from 'recharts';
 import type { Milestone } from '../lib/types';
