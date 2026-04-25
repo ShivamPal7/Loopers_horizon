@@ -39,12 +39,13 @@ const baseData = {
   navMain: [
     { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboardIcon /> },
     { title: "Net Worth", url: "/dashboard/net-worth", icon: <TrendingUpIcon /> },
-    { title: "Milestones", url: "/dashboard/milestones", icon: <TargetIcon /> },
     { title: "Savings Plan", url: "/dashboard/savings-plan", icon: <PiggyBankIcon /> },
     { title: "Investments", url: "/dashboard/investments", icon: <LineChartIcon /> },
+    { title: "Milestones", url: "/dashboard/milestones", icon: <TargetIcon /> },
     { title: "Cashflow", url: "/dashboard/cashflow", icon: <WalletIcon /> },
     { title: "Life Timeline", url: "/dashboard/life-timeline", icon: <CalendarIcon /> },
     { title: "AI Advisor", url: "/dashboard/ai-advisor", icon: <SparklesIcon /> },
+
   ],
   documents: [
     { name: "Financial Report", url: "#", icon: <FileBarChart2Icon /> },

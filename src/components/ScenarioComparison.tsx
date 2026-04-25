@@ -1,21 +1,32 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import type { FinancialSettings, Milestone } from '../lib/types';
-import { X, ArrowRightLeft, TrendingUp } from 'lucide-react';
+import { X, ArrowRightLeft, TrendingUp, Info } from 'lucide-react';
 import { ProjectionChart } from './ProjectionChart';
 import { ScenarioPanel } from './ScenarioPanel';
 import { useState, useMemo } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 
 interface ScenarioComparisonProps {
   currentSettings: FinancialSettings;
   milestones: Milestone[];
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function ScenarioComparison({ currentSettings, milestones, onClose }: ScenarioComparisonProps) {
+export function ScenarioComparison({ currentSettings, milestones, open, onOpenChange }: ScenarioComparisonProps) {
   const [scenarioB, setScenarioB] = useState<FinancialSettings>({
     ...currentSettings,
-    monthlySavings: currentSettings.monthlySavings * 1.5,
-    annualInterestRate: currentSettings.annualInterestRate + 0.5
+    monthlySavings: Math.min(500000, currentSettings.monthlySavings * 1.5),
+    annualInterestRate: Math.min(15, currentSettings.annualInterestRate + 0.5)
   });
 
   const calculateProjection = (settings: FinancialSettings) => {
@@ -46,53 +57,48 @@ export function ScenarioComparison({ currentSettings, milestones, onClose }: Sce
   const delta = finalB - finalA;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-xl"
-    >
-      <div className="bg-slate-50 w-full max-w-[1400px] h-full max-h-[900px] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col relative border border-white/20">
-        <button 
-          onClick={onClose}
-          className="absolute top-6 right-6 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-slate-100 transition-all z-20"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="p-8 border-b border-slate-200 bg-white flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-black tracking-tight text-slate-900">Scenario Comparison</h2>
-            <p className="text-sm text-slate-500 font-medium">Compare different financial strategies side-by-side</p>
-          </div>
-          <div className="bg-blue-600 px-6 py-3 rounded-2xl text-white shadow-xl shadow-blue-200 flex items-center gap-4">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-200">Net Wealth Difference</p>
-              <p className="text-xl font-black">₹{(delta / 10000000).toFixed(2)} Cr</p>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[95vw] lg:max-w-[1400px] w-full h-[90vh] p-0 overflow-hidden flex flex-col border-none shadow-2xl">
+        <DialogHeader className="p-8 border-b bg-card">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <DialogTitle className="text-2xl font-bold tracking-tight">Scenario Comparison</DialogTitle>
+              <DialogDescription className="font-medium text-muted-foreground">
+                Side-by-side analysis of different financial strategies and their long-term impact.
+              </DialogDescription>
             </div>
-            <ArrowRightLeft className="w-6 h-6 text-blue-200 opacity-50" />
+            <div className="flex items-center gap-4 bg-primary/5 border border-primary/10 px-6 py-3 rounded-2xl">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">Net Wealth Delta</p>
+                <p className="text-xl font-black text-primary">₹{(delta / 10000000).toFixed(2)} Cr</p>
+              </div>
+              <ArrowRightLeft className="size-6 text-primary/40" />
+            </div>
           </div>
-        </div>
+        </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 bg-muted/20">
           {/* Scenario A */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-3 h-3 rounded-full bg-slate-400" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Current Strategy (A)</h3>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="bg-background">Strategy A</Badge>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Current Baseline</h3>
+              </div>
             </div>
             <ProjectionChart 
               data={projectionA} 
               milestones={milestones} 
               currentAge={currentSettings.currentAge} 
             />
-            <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm opacity-60 pointer-events-none">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-xs font-bold text-slate-500">MONTHLY SAVINGS</span>
+            <div className="p-6 bg-card rounded-2xl border shadow-sm opacity-60 pointer-events-none space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-muted-foreground uppercase">Monthly Savings</span>
                 <span className="text-sm font-black">₹{currentSettings.monthlySavings.toLocaleString()}</span>
               </div>
+              <Separator className="bg-border/50" />
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-slate-500">ANNUAL RETURN</span>
+                <span className="text-xs font-bold text-muted-foreground uppercase">Annual Return</span>
                 <span className="text-sm font-black">{currentSettings.annualInterestRate}%</span>
               </div>
             </div>
@@ -100,9 +106,15 @@ export function ScenarioComparison({ currentSettings, milestones, onClose }: Sce
 
           {/* Scenario B */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-3 h-3 rounded-full bg-blue-600 animate-pulse" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-blue-600">Growth Strategy (B)</h3>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-primary text-primary-foreground">Strategy B</Badge>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-primary">Growth Simulation</h3>
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary animate-pulse">
+                <TrendingUp className="size-3" />
+                REAL-TIME UPDATING
+              </div>
             </div>
             <ProjectionChart 
               data={projectionB} 
@@ -116,20 +128,25 @@ export function ScenarioComparison({ currentSettings, milestones, onClose }: Sce
           </div>
         </div>
 
-        <div className="p-6 border-t border-slate-200 bg-white flex justify-end gap-4">
-          <button 
-            onClick={onClose}
-            className="px-6 py-3 text-sm font-bold text-slate-600 hover:text-slate-900"
+        <div className="p-6 border-t bg-card flex justify-end gap-3">
+          <Button 
+            variant="ghost" 
+            onClick={() => onOpenChange(false)}
+            className="font-bold rounded-xl px-8"
           >
             Cancel
-          </button>
-          <button 
-            className="px-8 py-3 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition-all shadow-xl"
+          </Button>
+          <Button 
+            className="font-bold rounded-xl px-10 bg-primary shadow-lg shadow-primary/20"
+            onClick={() => {
+              // In a real app we'd apply the settings
+              onOpenChange(false);
+            }}
           >
             Apply Scenario B
-          </button>
+          </Button>
         </div>
-      </div>
-    </motion.div>
+      </DialogContent>
+    </Dialog>
   );
 }
