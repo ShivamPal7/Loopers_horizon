@@ -15,6 +15,7 @@ import {
   TargetIcon,
   PiggyBankIcon,
   LineChartIcon,
+  PlusIcon,
 } from "lucide-react"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import {
@@ -23,6 +24,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { Button } from "@/components/ui/button"
 
 const netWorthData = [
   { age: 25, assets: 1200000, liabilities: 800000, netWorth: 400000 },
@@ -97,6 +99,18 @@ export function NetWorth() {
     <div className="@container/main flex flex-1 flex-col gap-2">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
         
+        {/* Header with Action */}
+        <div className="flex items-center justify-between px-4 lg:px-6">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Net Worth</h1>
+            <p className="text-sm text-muted-foreground">Comprehensive tracking of your assets and liabilities</p>
+          </div>
+          <Button size="sm" className="gap-2">
+            <PlusIcon className="size-4" />
+            Add Asset
+          </Button>
+        </div>
+
         {/* Section Cards Style */}
         <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
           {cards.map(({ icon: Icon, label, value, change, trend, footer, sub }) => (

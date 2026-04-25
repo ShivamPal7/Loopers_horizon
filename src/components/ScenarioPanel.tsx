@@ -2,8 +2,15 @@ import { Slider } from '@/components/ui/slider';
 import type { FinancialSettings } from '../lib/types';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { TrendingUp, Wallet, Percent, Heart } from 'lucide-react';
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardContent, 
+  CardDescription 
+} from '@/components/ui/card';
+import { TrendingUp, Wallet, Percent, Heart, User, Banknote } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface ScenarioPanelProps {
   settings: FinancialSettings;
@@ -11,104 +18,131 @@ interface ScenarioPanelProps {
 }
 
 export function ScenarioPanel({ settings, onChange }: ScenarioPanelProps) {
-  const formatCurrency = (value: number) => `₹${value.toLocaleString()}`;
+  const formatCurrency = (value: number) => {
+    if (value >= 100000) return `₹${(value / 100000).toFixed(1)}L`;
+    return `₹${(value / 1000).toFixed(0)}K`;
+  };
 
   return (
-    <Card className="p-6 flex flex-col gap-8 bg-white/50 backdrop-blur-md border-slate-200 shadow-xl overflow-hidden relative">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-3xl" />
-      
-      <div className="flex items-center gap-3">
-        <TrendingUp className="text-blue-600 w-5 h-5" />
-        <h2 className="text-lg font-bold text-slate-800">Financial Strategy</h2>
-      </div>
-
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-              <Wallet className="w-3.5 h-3.5" /> Monthly Savings
-            </Label>
-            <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
-              {formatCurrency(settings.monthlySavings)}
-            </span>
+    <Card className="@container/card border-none bg-card/50 backdrop-blur-sm shadow-sm">
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
+            <TrendingUp className="size-4" />
           </div>
-          <Slider 
-            value={[settings.monthlySavings]} 
-            min={10000} 
-            max={500000} 
-            step={5000}
-            onValueChange={([val]) => onChange({ monthlySavings: val })}
-          />
-          <div className="flex justify-between text-[10px] text-slate-400 font-medium px-1">
-            <span>₹10k</span>
-            <span>₹5L</span>
+          <CardDescription className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80">
+            Financial Strategy
+          </CardDescription>
+        </div>
+        <CardTitle className="text-xl font-bold tracking-tight">Simulation Controls</CardTitle>
+      </CardHeader>
+      
+      <CardContent className="space-y-8">
+        {/* Monthly Savings */}
+        <div className="space-y-5">
+          <div className="flex justify-between items-center">
+            <Label className="text-xs font-bold text-muted-foreground flex items-center gap-2">
+              <Wallet className="size-3.5" /> Monthly Savings
+            </Label>
+            <Badge variant="secondary" className="font-black text-sm px-2.5 py-0.5 bg-primary/5 text-primary border-primary/10">
+              ₹{settings.monthlySavings.toLocaleString()}
+            </Badge>
+          </div>
+          <div className="px-1">
+            <Slider 
+              value={[settings.monthlySavings]} 
+              min={10000} 
+              max={500000} 
+              step={5000}
+              onValueChange={([val]) => onChange({ monthlySavings: val })}
+              className="py-2"
+            />
+          </div>
+          <div className="flex justify-between text-[10px] text-muted-foreground/60 font-black uppercase tracking-widest px-1">
+            <span>{formatCurrency(10000)}</span>
+            <span>{formatCurrency(500000)}</span>
           </div>
         </div>
 
-        <div className="space-y-4">
+        {/* Annual Return */}
+        <div className="space-y-5">
           <div className="flex justify-between items-center">
-            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-              <Percent className="w-3.5 h-3.5" /> Annual Return
+            <Label className="text-xs font-bold text-muted-foreground flex items-center gap-2">
+              <Percent className="size-3.5" /> Annual Return
             </Label>
-            <span className="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+            <Badge variant="secondary" className="font-black text-sm px-2.5 py-0.5 bg-emerald-500/5 text-emerald-600 border-emerald-500/10">
               {settings.annualInterestRate}%
-            </span>
+            </Badge>
           </div>
-          <Slider 
-            value={[settings.annualInterestRate]} 
-            min={4} 
-            max={15} 
-            step={0.5}
-            onValueChange={([val]) => onChange({ annualInterestRate: val })}
-          />
-          <div className="flex justify-between text-[10px] text-slate-400 font-medium px-1">
+          <div className="px-1">
+            <Slider 
+              value={[settings.annualInterestRate]} 
+              min={4} 
+              max={15} 
+              step={0.5}
+              onValueChange={([val]) => onChange({ annualInterestRate: val })}
+              className="py-2"
+            />
+          </div>
+          <div className="flex justify-between text-[10px] text-muted-foreground/60 font-black uppercase tracking-widest px-1">
             <span>4%</span>
             <span>15%</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Current Age</Label>
-            <Input 
-              type="number" 
-              value={settings.currentAge}
-              onChange={(e) => onChange({ currentAge: parseInt(e.target.value) || 0 })}
-              className="h-9 text-sm font-bold"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-              <Heart className="w-3 h-3" /> Life Expectancy
+        {/* Age Inputs */}
+        <div className="grid grid-cols-2 gap-6 pt-2">
+          <div className="space-y-3">
+            <Label className="text-[10px] font-black text-muted-foreground/70 uppercase tracking-widest flex items-center gap-1.5">
+              <User className="size-3 text-primary/60" /> Age
             </Label>
-            <Input 
-              type="number" 
-              value={settings.lifeExpectancy}
-              onChange={(e) => onChange({ lifeExpectancy: parseInt(e.target.value) || 0 })}
-              className="h-9 text-sm font-bold"
-            />
+            <div className="relative">
+              <Input 
+                type="number" 
+                value={settings.currentAge}
+                onChange={(e) => onChange({ currentAge: parseInt(e.target.value) || 0 })}
+                className="h-11 text-base font-black bg-muted/20 border-none ring-1 ring-border/50 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all rounded-xl"
+              />
+            </div>
+          </div>
+          <div className="space-y-3">
+            <Label className="text-[10px] font-black text-muted-foreground/70 uppercase tracking-widest flex items-center gap-1.5">
+              <Heart className="size-3 text-rose-500/60" /> Lifespan
+            </Label>
+            <div className="relative">
+              <Input 
+                type="number" 
+                value={settings.lifeExpectancy}
+                onChange={(e) => onChange({ lifeExpectancy: parseInt(e.target.value) || 0 })}
+                className="h-11 text-base font-black bg-muted/20 border-none ring-1 ring-border/50 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all rounded-xl"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Current Net Worth</Label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
+        {/* Net Worth Input */}
+        <div className="space-y-3 pt-2">
+          <Label className="text-[10px] font-black text-muted-foreground/70 uppercase tracking-widest flex items-center gap-1.5">
+            <Banknote className="size-3 text-emerald-500/60" /> Current Net Worth
+          </Label>
+          <div className="relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 font-black group-focus-within:text-primary/70 transition-colors">₹</div>
             <Input 
               type="number" 
               value={settings.currentNetWorth}
               onChange={(e) => onChange({ currentNetWorth: parseInt(e.target.value) || 0 })}
-              className="h-10 pl-7 text-sm font-bold bg-slate-50 border-slate-200"
+              className="h-14 pl-8 text-lg font-black bg-muted/20 border-none ring-1 ring-border/50 focus-visible:ring-2 focus-visible:ring-primary/30 transition-all rounded-xl"
             />
           </div>
         </div>
-      </div>
 
-      <div className="pt-4 mt-4 border-t border-slate-100">
-        <p className="text-[10px] text-slate-400 italic">
-          *Calculations assume monthly compounding and end-of-year milestone drawdowns.
-        </p>
-      </div>
+        {/* Footer Note */}
+        <div className="pt-6 mt-2 border-t border-border/40">
+          <p className="text-[10px] text-muted-foreground/50 font-medium italic leading-relaxed">
+            Simulation uses monthly compounding and annual milestone drawdowns for projection accuracy.
+          </p>
+        </div>
+      </CardContent>
     </Card>
   );
 }
