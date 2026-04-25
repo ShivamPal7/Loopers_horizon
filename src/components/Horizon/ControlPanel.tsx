@@ -1,7 +1,6 @@
 import React from 'react';
-import { TrendingUp, Wallet, Percent, ZoomIn, Info } from 'lucide-react';
 import { formatCurrency } from '@/lib/finance-utils';
-import { cn } from '../../lib/utils';
+import { Settings2, Save, GitCompare, BarChart3, TrendingUp } from 'lucide-react';
 
 interface ControlPanelProps {
   initialNetWorth: number;
@@ -37,129 +36,145 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onCompare,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-8 bg-white/5 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-2xl">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8 p-10 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 shadow-2xl">
       
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-white/60">
-          <TrendingUp size={16} />
-          <span className="text-xs font-bold uppercase tracking-widest">Monthly Savings</span>
+      {/* Column 1: Core Params */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-white/40 mb-2">
+          <Settings2 size={16} strokeWidth={2.5} />
+          <span className="text-[10px] font-black uppercase tracking-widest">Base Parameters</span>
         </div>
-        <div className="text-2xl font-black text-white">
-          {formatCurrency(monthlySavings)}
+        
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block">Monthly Savings</label>
+            <div className="flex items-center gap-3">
+              <input 
+                type="range" min="0" max="200000" step="5000"
+                value={monthlySavings}
+                onChange={(e) => setMonthlySavings(Number(e.target.value))}
+                className="flex-1 accent-blue-600"
+              />
+              <span className="text-xs font-black text-white w-16 text-right">₹{(monthlySavings/1000).toFixed(0)}k</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block">Annual Growth (%)</label>
+            <div className="flex items-center gap-3">
+              <input 
+                type="range" min="0" max="20" step="0.5"
+                value={annualInterestRate}
+                onChange={(e) => setAnnualInterestRate(Number(e.target.value))}
+                className="flex-1 accent-blue-600"
+              />
+              <span className="text-xs font-black text-white w-12 text-right">{annualInterestRate}%</span>
+            </div>
+          </div>
         </div>
-        <input 
-          type="range" 
-          min="0" 
-          max="200000" 
-          step="1000"
-          value={monthlySavings}
-          onChange={(e) => setMonthlySavings(Number(e.target.value))}
-          className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500"
-        />
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white/60">
-            <Percent size={16} />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Growth Rate</span>
-          </div>
-          <span className="text-xl font-black text-white">{annualInterestRate}%</span>
+      {/* Column 2: Net Worth & Inflation */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-white/40 mb-2">
+          <TrendingUp size={16} strokeWidth={2.5} />
+          <span className="text-[10px] font-black uppercase tracking-widest">Initial Assets</span>
         </div>
-        <input 
-          type="range" min="0" max="20" step="0.5"
-          value={annualInterestRate}
-          onChange={(e) => setAnnualInterestRate(Number(e.target.value))}
-          className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500"
-        />
         
-        <div className="flex items-center justify-between pt-2">
-          <span className="text-[10px] font-bold text-white/30 uppercase">Inflation</span>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-white/60">{inflationRate}%</span>
+        <div className="space-y-4">
+           <div className="space-y-2">
+            <label className="text-[10px] font-black text-white/40 uppercase tracking-widest block">Current Net Worth</label>
             <input 
-              type="checkbox" 
-              checked={inflationRate > 0} 
-              onChange={(e) => setInflationRate(e.target.checked ? 3 : 0)}
-              className="w-3 h-3 rounded bg-white/10 border-white/10 text-blue-500 focus:ring-0"
+              type="number"
+              value={initialNetWorth}
+              onChange={(e) => setInitialNetWorth(Number(e.target.value))}
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:border-blue-500/50"
             />
           </div>
+          <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 gap-4">
+            <span className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-tight">Inflation Adjust</span>
+            <button 
+              onClick={() => setInflationRate(inflationRate === 0 ? 6 : 0)}
+              className={cn(
+                "w-10 h-6 rounded-full transition-all relative shrink-0",
+                inflationRate > 0 ? "bg-blue-600" : "bg-white/10"
+              )}
+            >
+              <div className={cn(
+                "absolute top-1 w-4 h-4 bg-white rounded-full transition-all",
+                inflationRate > 0 ? "right-1" : "left-1"
+              )} />
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-white/60">
-          <Wallet size={16} />
-          <span className="text-[10px] font-bold uppercase tracking-widest">Initial Assets</span>
+      {/* Column 3: Navigation & Zoom */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-white/40 mb-2">
+          <BarChart3 size={16} strokeWidth={2.5} />
+          <span className="text-[10px] font-black uppercase tracking-widest">Perspective Zoom</span>
         </div>
-        <div className="text-2xl font-black text-white">
-          {formatCurrency(initialNetWorth)}
-        </div>
-        <input 
-          type="range" min="0" max="5000000" step="50000"
-          value={initialNetWorth}
-          onChange={(e) => setInitialNetWorth(Number(e.target.value))}
-          className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500"
-        />
         
-        <div className="flex gap-2 pt-2">
+        <div className="grid grid-cols-3 gap-2">
+          {(['full', '10y', '5y'] as const).map((level) => (
+            <button
+              key={level}
+              onClick={() => setZoomLevel(level)}
+              className={cn(
+                "py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest border transition-all",
+                zoomLevel === level 
+                  ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20" 
+                  : "bg-white/5 text-white/40 border-white/10 hover:border-white/20"
+              )}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
+        <p className="text-[9px] font-bold text-white/20 italic text-center">
+          * Drag markers to re-position life events
+        </p>
+      </div>
+
+      {/* Column 4: Comparison Actions */}
+      <div className="flex flex-col gap-4 justify-end">
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 shadow-xl shadow-blue-600/20 relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-100/70 mb-2 block">Est. Terminal Wealth</span>
+          <div className="text-[15px] font-black text-white tracking-[-0.05em] leading-none break-all">
+            {formatCurrency(terminalBalance)}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
           <button 
             onClick={onSaveScenario}
-            className="flex-1 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-xl text-[8px] font-black uppercase tracking-widest transition-colors border border-white/5"
+            className="flex items-center justify-center gap-2 py-4 bg-white text-slate-900 rounded-2xl hover:bg-slate-100 transition-all active:scale-95 shadow-lg"
           >
-            {hasSavedScenario ? 'Update Scenario' : 'Save Scenario'}
+            <Save size={16} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Save</span>
           </button>
-          {hasSavedScenario && (
-            <button 
-              onClick={onCompare}
-              className="flex-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-[8px] font-black uppercase tracking-widest transition-colors shadow-lg shadow-indigo-600/20"
-            >
-              Compare
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-5 shadow-lg border border-white/20 relative overflow-hidden group">
-        <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all" />
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70 mb-1 block">Est. Terminal Wealth</span>
-        <div className="text-2xl font-black text-white tracking-tight">
-          {formatCurrency(terminalBalance)}
-        </div>
-        <div className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-blue-100/70">
-          <Info size={10} />
-          Calculated at age 80
-        </div>
-      </div>
-
-      <div className="md:col-span-4 flex items-center justify-between pt-4 border-t border-white/5">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-white/40">
-            <ZoomIn size={14} />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Timeline Zoom</span>
-          </div>
-          <div className="flex p-1 bg-white/5 rounded-xl border border-white/10">
-            {(['full', '10y', '5y'] as const).map((level) => (
-              <button
-                key={level}
-                onClick={() => setZoomLevel(level)}
-                className={cn(
-                  "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all",
-                  zoomLevel === level 
-                    ? "bg-white/10 text-white shadow-inner" 
-                    : "text-white/40 hover:text-white/70"
-                )}
-              >
-                {level === 'full' ? 'Full Life' : level}
-              </button>
-            ))}
-          </div>
-        </div>
-        
-        <div className="text-[10px] font-medium text-white/30 italic">
-          * Drag milestones on the timeline to re-position them
+          <button 
+            onClick={onCompare}
+            disabled={!hasSavedScenario}
+            className={cn(
+              "flex items-center justify-center gap-2 py-4 rounded-2xl transition-all active:scale-95 shadow-lg",
+              hasSavedScenario 
+                ? "bg-white/10 text-white border border-white/20 hover:bg-white/20" 
+                : "bg-white/5 text-white/20 border-transparent cursor-not-allowed"
+            )}
+          >
+            <GitCompare size={16} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Compare</span>
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
+// Helper for class names
+function cn(...classes: any[]) {
+  return classes.filter(Boolean).join(' ');
+}

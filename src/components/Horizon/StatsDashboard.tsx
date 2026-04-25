@@ -1,216 +1,207 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { formatCurrency } from '@/lib/finance-utils';
-import { Award, Users, Target, User } from 'lucide-react';
+import { Award, Target, TrendingUp, Layout, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Milestone, SimulationResult } from '@/lib/finance-utils';
 
 interface StatsDashboardProps {
   currentAge: number;
-  initialNetWorth: number;
-  stats: {
-    lifeStage: string;
-    peerAverage: number;
-    aheadOfPeers: number;
-    badges: { id: string; label: string; icon: string }[];
-  };
+  monthlySavings: number;
+  annualInterestRate: number;
   milestones: Milestone[];
   projection: SimulationResult[];
+  stats: {
+    lifeStage: string;
+    badges: { id: string; label: string; icon: string }[];
+  };
 }
 
 export const StatsDashboard: React.FC<StatsDashboardProps> = ({
   currentAge,
-  initialNetWorth,
-  stats,
+  monthlySavings,
+  annualInterestRate,
   milestones,
   projection,
+  stats,
 }) => {
   const lifeProgress = (currentAge / 80) * 100;
+  const totalGoals = milestones.length;
+  const firstGoal = milestones[0];
+  const timeToGoal = firstGoal ? firstGoal.age - currentAge : 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      
-      {/* Section A: Current Position */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="col-span-1 bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10"
-      >
-        <div className="flex items-center gap-2 mb-4 text-white/40">
-          <User size={16} />
-          <span className="text-[10px] font-bold uppercase tracking-widest">Current Position</span>
-        </div>
-        <div className="space-y-4">
-          <div>
-            <div className="flex justify-between items-end mb-2">
-              <span className="text-2xl font-black text-white">{currentAge}</span>
-              <span className="text-[10px] font-bold text-blue-400 uppercase tracking-tighter">{stats.lifeStage}</span>
+    <div className="space-y-8">
+      {/* Top Row: Current Position & Quick Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        {/* Current Position */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/10 shadow-2xl"
+        >
+          <div className="flex items-center gap-3 mb-10 text-blue-400">
+            <Clock size={22} strokeWidth={2.5} />
+            <span className="text-xs font-black uppercase tracking-[0.2em]">Current Position</span>
+          </div>
+          
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <span className="text-7xl font-black text-white tracking-tighter">{currentAge}</span>
+              <span className="block text-xs font-black text-white/30 uppercase tracking-widest mt-2">{stats.lifeStage}</span>
             </div>
-            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+            <div className="text-right">
+              <span className="text-4xl font-black text-white tracking-tight">{80 - currentAge}</span>
+              <span className="block text-xs font-black text-white/30 uppercase tracking-widest mt-2">Years Left</span>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex justify-between text-[10px] font-black text-white/40 uppercase tracking-widest">
+              <span>Life Progress</span>
+              <span className="text-white">{Math.round(lifeProgress)}%</span>
+            </div>
+            <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 p-0.5">
               <motion.div 
                 initial={{ width: 0 }}
                 whileInView={{ width: `${lifeProgress}%` }}
-                className="h-full bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+                className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)]"
               />
             </div>
-            <div className="flex justify-between mt-1 text-[10px] font-medium text-white/20">
-              <span>AGE 20</span>
-              <span>AGE 80</span>
-            </div>
           </div>
-          <div className="flex justify-between pt-2 border-t border-white/5">
-            <div>
-              <div className="text-[10px] text-white/40 uppercase">Years Left</div>
-              <div className="text-lg font-bold text-white">{80 - currentAge}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10px] text-white/40 uppercase">Net Worth</div>
-              <div className="text-lg font-bold text-emerald-400">{formatCurrency(initialNetWorth)}</div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Section B: Peer Comparison */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.1 }}
-        className="col-span-1 bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10"
-      >
-        <div className="flex items-center gap-2 mb-4 text-white/40">
-          <Users size={16} />
-          <span className="text-[10px] font-bold uppercase tracking-widest">Cohort Analysis</span>
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium text-white/40 uppercase">Vs Average (Age {currentAge})</span>
-            <span className={cn(
-              "px-2 py-0.5 rounded-full text-[9px] font-black uppercase",
-              stats.aheadOfPeers > 0 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
-            )}>
-              {stats.aheadOfPeers > 0 ? "Ahead" : "Behind"}
-            </span>
+        {/* Quick Stats */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="bg-[#0f172a]/80 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/5 shadow-2xl"
+        >
+          <div className="flex items-center gap-3 mb-10 text-blue-400">
+            <TrendingUp size={22} strokeWidth={2.5} />
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-400/80">Quick Stats</span>
           </div>
-          <div className="text-2xl font-black text-white">
-            {formatCurrency(Math.abs(stats.aheadOfPeers))}
-            <span className="text-xs font-normal text-white/30 ml-2">{stats.aheadOfPeers > 0 ? 'above' : 'below'} peers</span>
-          </div>
-          <div className="flex gap-2 items-end h-16">
-            <div className="flex-1 bg-white/5 rounded-t-lg relative group">
-              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <motion.div 
-                initial={{ height: 0 }}
-                whileInView={{ height: '60%' }}
-                className="absolute bottom-0 w-full bg-white/20 rounded-t-lg"
-              />
-              <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-bold text-white/40">PEERS</span>
+
+          <div className="grid grid-cols-2 gap-y-10">
+            <div className="space-y-1">
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Monthly Savings</span>
+              <span className="text-3xl font-black text-white tracking-tight">₹{monthlySavings >= 1000 ? `${(monthlySavings/1000).toFixed(0)}k` : monthlySavings}</span>
             </div>
-            <div className="flex-1 bg-white/5 rounded-t-lg relative group">
-              <motion.div 
-                initial={{ height: 0 }}
-                whileInView={{ height: '100%' }}
-                className="absolute bottom-0 w-full bg-blue-500 rounded-t-lg shadow-lg"
-              />
-              <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] font-bold text-blue-400">YOU</span>
+            <div className="space-y-1 text-right">
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Total Goals</span>
+              <span className="text-3xl font-black text-white tracking-tight">{totalGoals}</span>
+            </div>
+            <div className="space-y-1">
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Avg Growth</span>
+              <span className="text-3xl font-black text-white tracking-tight">{annualInterestRate}%</span>
+            </div>
+            <div className="space-y-1 text-right">
+              <span className="block text-[10px] font-black text-white/30 uppercase tracking-widest">Time to Goal</span>
+              <span className="text-3xl font-black text-white tracking-tight">{timeToGoal} yrs</span>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
 
-      {/* Section C: Badges */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
-        className="col-span-1 bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10"
-      >
-        <div className="flex items-center gap-2 mb-4 text-white/40">
-          <Award size={16} />
-          <span className="text-[10px] font-bold uppercase tracking-widest">Achievements</span>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {['steady-saver', 'goal-setter', 'on-track', 'early-bird', 'diversifier', 'compounding-champion'].map((id) => {
-            const earned = stats.badges.some(b => b.id === id);
-            return (
-              <div 
-                key={id}
-                className={cn(
-                  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500",
-                  earned 
-                    ? "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/20" 
-                    : "bg-white/5 border border-white/5 grayscale opacity-30"
-                )}
-                title={id.replace('-', ' ')}
-              >
-                <Award size={20} className={cn(earned ? "text-white" : "text-white/20")} />
-              </div>
-            );
-          })}
-        </div>
-      </motion.div>
+      {/* Bottom Row: Goal Tracking & Badges */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        {/* Goal Tracking */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/10 shadow-2xl"
+        >
+          <div className="flex items-center gap-3 mb-8 text-emerald-400">
+            <Target size={22} strokeWidth={2.5} />
+            <span className="text-xs font-black uppercase tracking-[0.2em]">Goal Tracking</span>
+          </div>
 
-      {/* Section D: Goal Tracking (Full Width) */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.3 }}
-        className="col-span-full bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10"
-      >
-        <div className="flex items-center gap-2 mb-6 text-white/40">
-          <Target size={16} />
-          <span className="text-[10px] font-bold uppercase tracking-widest">Active Milestones Progression</span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {milestones.map((m) => {
-            const pAtAge = projection.find(p => p.age === m.age);
-            const balanceAtAge = pAtAge?.balance || 0;
-            const progress = Math.min(100, (balanceAtAge / m.cost) * 100);
-            const status = pAtAge?.shortfall || 'none';
-
-            return (
-              <div key={m.id} className="space-y-3 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="text-sm font-bold text-white mb-0.5">{m.label}</h4>
-                    <p className="text-[10px] font-medium text-white/40 uppercase tracking-tighter">Age {m.age} • {m.age - currentAge} years away</p>
+          <div className="space-y-6">
+            {milestones.slice(0, 2).map((m) => {
+              const pAtAge = projection.find(p => p.age === m.age);
+              const progress = Math.min(100, ((pAtAge?.balance || 0) / m.cost) * 100);
+              const status = pAtAge?.shortfall || 'none';
+              
+              return (
+                <div key={m.id} className="p-6 bg-white/5 rounded-3xl border border-white/5 space-y-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-black text-white tracking-tight">{m.label}</h4>
+                      <p className="text-[10px] font-bold text-white/30 uppercase mt-1">{m.age - currentAge} years away</p>
+                    </div>
+                    <div className={cn(
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest",
+                      status === 'none' ? "bg-emerald-500/20 text-emerald-400" : "bg-amber-500/20 text-amber-400"
+                    )}>
+                      {status !== 'none' && <Clock size={12} />}
+                      {status === 'none' ? "ON TRACK" : "AT RISK"}
+                    </div>
                   </div>
-                  <span className={cn(
-                    "px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest",
-                    status === 'none' ? "bg-emerald-500/20 text-emerald-400" :
-                    status === 'minor' ? "bg-amber-500/20 text-amber-400" :
-                    "bg-red-500/20 text-red-400"
+                  <div className="space-y-2">
+                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${Math.max(5, progress)}%` }}
+                        className={cn(
+                          "h-full rounded-full transition-all duration-1000 shadow-lg",
+                          status === 'none' ? "bg-emerald-500 shadow-emerald-500/20" : "bg-amber-500 shadow-amber-500/20"
+                        )}
+                      />
+                    </div>
+                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/30">
+                      <span>Progress</span>
+                      <span className="text-white">{Math.round(progress)}%</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Achievement Badges */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/10 shadow-2xl"
+        >
+          <div className="flex items-center gap-3 mb-10 text-orange-400">
+            <Award size={22} strokeWidth={2.5} />
+            <span className="text-xs font-black uppercase tracking-[0.2em]">Achievement Badges</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {['STEADY SAVER', 'GOAL SETTER', 'ON TRACK', 'EARLY BIRD'].map((label, i) => {
+              const isHighlight = i === 3;
+              return (
+                <div 
+                  key={label}
+                  className={cn(
+                    "aspect-square rounded-3xl flex flex-col items-center justify-center gap-3 transition-all",
+                    isHighlight 
+                      ? "bg-white/10 border-2 border-amber-500/40 shadow-lg shadow-amber-500/10" 
+                      : "bg-white/5 border border-white/5 opacity-30 grayscale"
+                  )}
+                >
+                  <div className={cn(
+                    "p-3 rounded-full",
+                    isHighlight ? "bg-amber-500/20 text-amber-400" : "bg-white/10 text-white/40"
                   )}>
-                    {status === 'none' ? 'On Track' : status === 'minor' ? 'At Risk' : 'Critical'}
-                  </span>
-                </div>
-                <div>
-                  <div className="flex justify-between text-[10px] font-bold mb-1.5">
-                    <span className="text-white/60">{Math.round(progress)}% Funded</span>
-                    <span className="text-white/90">{formatCurrency(m.cost)}</span>
+                    {label === 'STEADY SAVER' && <TrendingUp size={20} />}
+                    {label === 'GOAL SETTER' && <Target size={20} />}
+                    {label === 'ON TRACK' && <Layout size={20} />}
+                    {label === 'EARLY BIRD' && <Clock size={20} />}
                   </div>
-                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${progress}%` }}
-                      className={cn(
-                        "h-full rounded-full transition-all duration-1000",
-                        status === 'none' ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" :
-                        status === 'minor' ? "bg-amber-500" : "bg-red-500"
-                      )}
-                    />
-                  </div>
+                  <span className="text-[8px] font-black text-white/60 uppercase tracking-widest">{label}</span>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </motion.div>
-
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };

@@ -1,10 +1,10 @@
 import { useState, useMemo, useCallback } from 'react';
-import { 
+import {
   calculateForwardSimulation,
   getLifeStage,
   PEER_DATA
 } from '@/lib/finance-utils';
-import type { 
+import type {
   Milestone,
   LifeEvent
 } from '@/lib/finance-utils';
@@ -52,7 +52,7 @@ export const useFinancialSimulation = () => {
   const lifeStage = getLifeStage(currentAge);
   const peerAverage = PEER_DATA[currentAge] || 320000;
   const aheadOfPeers = initialNetWorth - peerAverage;
-  
+
   const badges = useMemo(() => {
     const list = [];
     if (milestones.length >= 3) list.push({ id: 'goal-setter', label: 'Goal Setter', icon: '🏅' });

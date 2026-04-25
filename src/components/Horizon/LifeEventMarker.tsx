@@ -14,19 +14,18 @@ export const LifeEventMarker: React.FC<LifeEventMarkerProps> = ({
   x,
 }) => {
   return (
-    <div
-      className="absolute bottom-16 -translate-x-1/2 flex flex-col items-center group pointer-events-none"
-      style={{ left: x }}
+    <div 
+      className="absolute flex flex-col items-center pointer-events-none z-0"
+      style={{ left: x, top: 40 }}
+      title={`Age ${age}`}
     >
-      <div className="mb-2 p-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm group-hover:bg-white/10 transition-all duration-500">
-        <span className="text-sm">{icon}</span>
+      <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg shadow-sm opacity-60">
+        {icon}
       </div>
-      
-      <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 backdrop-blur-md border border-white/10 px-2 py-1 rounded text-[9px] font-bold text-white whitespace-nowrap mb-1">
-        {label} (Age {age})
+      <div className="w-px h-[320px] bg-white/5" />
+      <div className="mt-2 opacity-40 text-center">
+        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">{label}</span>
       </div>
-
-      <div className="w-px h-12 bg-white/10 group-hover:bg-white/30 transition-colors" />
     </div>
   );
 };
