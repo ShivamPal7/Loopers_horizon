@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -7,6 +8,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { PlusCircleIcon, BellIcon } from "lucide-react"
+import { AddGoalModal } from "@/components/add-goal-modal"
 
 export function NavMain({
   items,
@@ -24,13 +26,15 @@ export function NavMain({
         <SidebarMenu>
           {/* Quick action row */}
           <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip="Add Milestone"
-              className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
-            >
-              <PlusCircleIcon />
-              <span>Add Milestone</span>
-            </SidebarMenuButton>
+            <AddGoalModal>
+              <SidebarMenuButton
+                tooltip="Add Milestone"
+                className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+              >
+                <PlusCircleIcon />
+                <span>Add Milestone</span>
+              </SidebarMenuButton>
+            </AddGoalModal>
             <Button
               size="icon"
               className="size-8 group-data-[collapsible=icon]:opacity-0"
@@ -51,10 +55,10 @@ export function NavMain({
                 isActive={item.isActive}
                 asChild
               >
-                <a href={item.url} className="flex items-center gap-2">
+                <Link to={item.url} className="flex items-center gap-2">
                   {item.icon}
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

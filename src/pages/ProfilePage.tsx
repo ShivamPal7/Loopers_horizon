@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useAuthStore } from '@/lib/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { 
-  User as UserIcon, 
   Calendar, 
   LogOut, 
   ChevronLeft,
