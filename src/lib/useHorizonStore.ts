@@ -6,7 +6,7 @@ const STORAGE_KEY = 'horizon_data';
 const DEFAULT_SETTINGS: FinancialSettings = {
   currentAge: 28,
   currentNetWorth: 500000,
-  monthlySavings: 32000,
+  monthlySavings: 190000,
   annualInterestRate: 8,
   inflationRate: 4,
   isInflationEnabled: false,
