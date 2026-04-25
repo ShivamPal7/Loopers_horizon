@@ -18,7 +18,7 @@ import {
   PlusIcon,
   ExternalLinkIcon,
 } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import {
   ChartContainer,
   ChartTooltip,

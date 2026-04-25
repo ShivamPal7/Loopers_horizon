@@ -1,6 +1,5 @@
-import { motion, AnimatePresence } from 'framer-motion';
 import type { FinancialSettings, Milestone } from '../lib/types';
-import { X, ArrowRightLeft, TrendingUp, Info } from 'lucide-react';
+import { ArrowRightLeft, TrendingUp } from 'lucide-react';
 import { ProjectionChart } from './ProjectionChart';
 import { ScenarioPanel } from './ScenarioPanel';
 import { useState, useMemo } from 'react';

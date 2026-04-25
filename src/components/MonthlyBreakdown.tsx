@@ -26,7 +26,6 @@ interface MonthlyBreakdownProps {
 }
 
 export function MonthlyBreakdown({ settings, milestones, age, open, onOpenChange }: MonthlyBreakdownProps) {
-  const currentYear = new Date().getFullYear();
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
   const calculateYearlyDetails = () => {

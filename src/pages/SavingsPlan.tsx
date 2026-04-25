@@ -88,11 +88,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-function formatCurrency(val: number) {
-  if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`
-  if (val >= 100000) return `₹${(val / 100000).toFixed(1)}L`
-  return `₹${(val / 1000).toFixed(0)}K`
-}
 
 export function SavingsPlan() {
   return (

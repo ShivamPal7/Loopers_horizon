@@ -1,18 +1,14 @@
-import { motion } from 'framer-motion';
 import { 
   Trophy, 
   Target, 
   Users, 
   Activity, 
-  CheckCircle2, 
-  AlertCircle,
   Clock,
-  ArrowUpRight,
   TrendingUp,
   TrendingDown
 } from 'lucide-react';
 import type { Milestone, FinancialSettings } from '../lib/types';
-import { cn } from '@/lib/utils';
+
 import { Progress } from '@/components/ui/progress';
 import { Badge } from "@/components/ui/badge"
 import {
@@ -22,7 +18,6 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  CardContent,
 } from "@/components/ui/card"
 
 interface StatsCardProps {

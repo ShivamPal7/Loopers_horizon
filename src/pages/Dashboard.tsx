@@ -7,7 +7,7 @@ import { ScenarioPanel } from '@/components/ScenarioPanel';
 import { StatsCard } from '@/components/StatsCard';
 import { ScenarioComparison } from '@/components/ScenarioComparison';
 import { MonthlyBreakdown } from '@/components/MonthlyBreakdown';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
   Plus, 
@@ -178,7 +178,12 @@ export function Dashboard() {
               </button>
             </div>
             <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-100/50">
-              <Timeline milestones={milestones} currentAge={settings.currentAge} />
+              <Timeline 
+                milestones={milestones} 
+                currentAge={settings.currentAge} 
+                lifeExpectancy={settings.lifeExpectancy}
+                onSelectAge={() => {}}
+              />
             </div>
           </section>
 
@@ -204,11 +209,13 @@ export function Dashboard() {
               </div>
             </div>
             <div className="bg-white p-2 rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-100/50 overflow-hidden">
-              <ProjectionChart 
-                data={projectionData} 
-                milestones={milestones} 
-                currentAge={settings.currentAge} 
-              />
+              <div className="h-[450px] w-full">
+                <ProjectionChart 
+                  data={projectionData} 
+                  milestones={milestones} 
+                  currentAge={settings.currentAge} 
+                />
+              </div>
             </div>
           </section>
         </div>
@@ -238,23 +245,19 @@ export function Dashboard() {
       </main>
 
       {/* Modals */}
-      <AnimatePresence>
-        {showComparison && (
-          <ScenarioComparison 
-            currentSettings={settings}
-            milestones={milestones}
-            onClose={() => setShowComparison(false)}
-          />
-        )}
-        {showBreakdown && (
-          <MonthlyBreakdown 
-            settings={settings}
-            milestones={milestones}
-            age={settings.currentAge + 5}
-            onClose={() => setShowBreakdown(false)}
-          />
-        )}
-      </AnimatePresence>
+      <ScenarioComparison 
+        currentSettings={settings}
+        milestones={milestones}
+        open={showComparison}
+        onOpenChange={setShowComparison}
+      />
+      <MonthlyBreakdown 
+        settings={settings}
+        milestones={milestones}
+        age={settings.currentAge + 5}
+        open={showBreakdown}
+        onOpenChange={setShowBreakdown}
+      />
 
       <style>{`
         @media print {

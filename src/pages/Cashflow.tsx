@@ -11,7 +11,6 @@ function buildProjection(monthlySavings: number): CashflowEntry[] {
   const annualSavings = monthlySavings * 12
   const rate = 0.00944 // ~monthly rate for ~12% annual
   const rows: CashflowEntry[] = []
-  let balance = annualSavings
   for (let age = 20; age <= 25; age++) {
     const opening = age === 20 ? 0 : rows[rows.length - 1].closingBalance
     const growth = Math.round(opening * rate * 12)

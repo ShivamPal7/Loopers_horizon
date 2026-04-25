@@ -1,12 +1,14 @@
 export type Category = 'housing' | 'business' | 'education' | 'family' | 'travel' | 'retirement' | 'health' | 'relationships';
 
+export type Priority = 'high' | 'medium' | 'low';
+
 export type Milestone = {
   id: string;
   label: string;
   targetAge: number;
   cost: number;
   category: Category;
-  priority: 'high' | 'medium' | 'low';
+  priority: Priority;
   status?: 'on-track' | 'at-risk' | 'critical';
 };
 

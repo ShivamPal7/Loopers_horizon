@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { Milestone, LifeEvent, FinancialSettings, Scenario, HorizonState } from './types';
+import type { Milestone, FinancialSettings, HorizonState } from './types';
 
 const STORAGE_KEY = 'horizon_data';
 
