@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Link, useLocation } from "react-router-dom"
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -29,21 +30,21 @@ import {
   BookOpenIcon,
 } from "lucide-react"
 
-const data = {
+const baseData = {
   user: {
     name: "Alex Horizon",
     email: "alex@projecthorizon.app",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex",
   },
   navMain: [
-    { title: "Dashboard", url: "#", icon: <LayoutDashboardIcon /> },
-    { title: "Net Worth", url: "#", icon: <TrendingUpIcon /> },
-    { title: "Milestones", url: "#", icon: <TargetIcon /> },
-    { title: "Savings Plan", url: "#", icon: <PiggyBankIcon /> },
-    { title: "Investments", url: "#", icon: <LineChartIcon /> },
-    { title: "Cashflow", url: "#", icon: <WalletIcon /> },
-    { title: "Life Timeline", url: "#", icon: <CalendarIcon /> },
-    { title: "AI Advisor", url: "#", icon: <SparklesIcon /> },
+    { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboardIcon /> },
+    { title: "Net Worth", url: "/dashboard/net-worth", icon: <TrendingUpIcon /> },
+    { title: "Milestones", url: "/dashboard/milestones", icon: <TargetIcon /> },
+    { title: "Savings Plan", url: "/dashboard/savings-plan", icon: <PiggyBankIcon /> },
+    { title: "Investments", url: "/dashboard/investments", icon: <LineChartIcon /> },
+    { title: "Cashflow", url: "/dashboard/cashflow", icon: <WalletIcon /> },
+    { title: "Life Timeline", url: "/dashboard/life-timeline", icon: <CalendarIcon /> },
+    { title: "AI Advisor", url: "/dashboard/ai-advisor", icon: <SparklesIcon /> },
   ],
   documents: [
     { name: "Financial Report", url: "#", icon: <FileBarChart2Icon /> },
@@ -58,6 +59,12 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const location = useLocation();
+  const navMainWithActive = baseData.navMain.map(item => ({
+    ...item,
+    isActive: location.pathname === item.url || (item.url !== '/dashboard' && location.pathname.startsWith(item.url))
+  }));
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -67,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-2!"
             >
-              <a href="/dashboard" className="flex items-center gap-2.5">
+              <Link to="/dashboard" className="flex items-center gap-2.5">
                 <div className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shrink-0">
                   <LayoutDashboardIcon className="size-4" />
                 </div>
@@ -75,21 +82,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="text-sm font-bold tracking-tight">Project Horizon</span>
                   <span className="text-[10px] text-muted-foreground font-medium tracking-wide">Financial Planning</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMainWithActive} />
+        <NavDocuments items={baseData.documents} />
+        <NavSecondary items={baseData.navSecondary} className="mt-auto" />
       </SidebarContent>
 
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={baseData.user} />
       </SidebarFooter>
     </Sidebar>
   )
 }
+

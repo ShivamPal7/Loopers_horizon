@@ -33,20 +33,20 @@ import {
 // Monthly net worth + savings data for Project Horizon
 const chartData = [
   { date: "2024-01-01", netWorth: 3850000, savings: 32000 },
-  { date: "2024-02-01", netWorth: 3920000, savings: 35000 },
-  { date: "2024-03-01", netWorth: 3980000, savings: 34000 },
-  { date: "2024-04-01", netWorth: 4080000, savings: 38000 },
-  { date: "2024-05-01", netWorth: 4150000, savings: 36000 },
-  { date: "2024-06-01", netWorth: 4200000, savings: 40000 },
+  { date: "2024-02-01", netWorth: 3950000, savings: 35000 },
+  { date: "2024-03-01", netWorth: 3820000, savings: 34000 }, // Dip
+  { date: "2024-04-01", netWorth: 4050000, savings: 38000 },
+  { date: "2024-05-01", netWorth: 4180000, savings: 36000 },
+  { date: "2024-06-01", netWorth: 4120000, savings: 40000 }, // Minor dip
   { date: "2024-07-01", netWorth: 4350000, savings: 38500 },
-  { date: "2024-08-01", netWorth: 4500000, savings: 41000 },
-  { date: "2024-09-01", netWorth: 4620000, savings: 39000 },
-  { date: "2024-10-01", netWorth: 4800000, savings: 42000 },
-  { date: "2024-11-01", netWorth: 4970000, savings: 38000 },
-  { date: "2024-12-01", netWorth: 5240000, savings: 45000 },
-  { date: "2025-01-01", netWorth: 5380000, savings: 38500 },
-  { date: "2025-02-01", netWorth: 5490000, savings: 40000 },
-  { date: "2025-03-01", netWorth: 5610000, savings: 38500 },
+  { date: "2024-08-01", netWorth: 4650000, savings: 41000 }, // Spike
+  { date: "2024-09-01", netWorth: 4520000, savings: 39000 }, // Dip
+  { date: "2024-10-01", netWorth: 4780000, savings: 42000 },
+  { date: "2024-11-01", netWorth: 4950000, savings: 38000 },
+  { date: "2024-12-01", netWorth: 4880000, savings: 45000 }, // Minor dip
+  { date: "2025-01-01", netWorth: 5150000, savings: 38500 }, // Spike
+  { date: "2025-02-01", netWorth: 5090000, savings: 40000 }, // Minor dip
+  { date: "2025-03-01", netWorth: 5240000, savings: 38500 },
 ]
 
 const chartConfig = {

@@ -10,6 +10,7 @@ import {
   SunIcon,
 } from "lucide-react"
 import { useState } from "react"
+import { AddGoalModal } from "@/components/add-goal-modal"
 
 export function SiteHeader() {
   const [dark, setDark] = useState(false)
@@ -48,10 +49,12 @@ export function SiteHeader() {
           </Badge>
 
           {/* Add Milestone */}
-          <Button size="sm" className="hidden sm:flex gap-1.5">
-            <PlusIcon className="size-3.5" />
-            Add Milestone
-          </Button>
+          <AddGoalModal>
+            <Button size="sm" className="hidden sm:flex gap-1.5">
+              <PlusIcon className="size-3.5" />
+              Add Milestone
+            </Button>
+          </AddGoalModal>
 
           {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative size-8">
