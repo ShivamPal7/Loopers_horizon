@@ -29,7 +29,12 @@ export function useHorizonStore() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Migrate stale default monthlySavings
+        if (parsed.settings?.monthlySavings === 32000) {
+          parsed.settings.monthlySavings = 190000;
+        }
+        return parsed;
       } catch (e) {
         console.error('Failed to parse saved state', e);
       }
