@@ -127,4 +127,25 @@
   html {
     @apply font-sans;
     }
+
+  /* Sleek Scrollbar Global */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklch, var(--muted-foreground), transparent 80%);
+    border-radius: 20px;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklch, var(--muted-foreground), transparent 60%);
+  }
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
 }
